@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registration Form with Validation</title>
+    <style>
+        .form-container {
+            width: 300px;
+            margin: 0 auto;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .error {
+            color: red;
+            font-size: 12px;
+            display: none;
+        }
+        .success {
+            color: green;
+            font-size: 14px;
+            display: none;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #cccccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Registration Form</h2>
+        <form id="registration-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+                <span class="error" id="username-error">This field is required.</span>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+                <span class="error" id="password-error">This field is required.</span>
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" name="confirm-password" required>
+                <span class="error" id="confirm-password-error">This field is required.</span>
+                <span class="error" id="password-match-error">Passwords do not match.</span>
+            </div>
+            <button type="submit" id="register-button" disabled>Register</button>
+            <span class="success" id="success-message">Registration successful!</span>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('registration-form');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirm-password');
+        const registerButton = document.getElementById('register-button');
+        const successMessage = document.getElementById('success-message');
+
+        const showError = (input, errorId) => {
+            const errorElement = document.getElementById(errorId);
+            if (input.value.trim() === '') {
+                errorElement.style.display = 'block';
+                return false;
+            } else {
+                errorElement.style.display = 'none';
+                return true;
+            }
+        };
+
+        const validateForm = () => {
+            const isUsernameValid = showError(usernameInput, 'username-error');
+            const isPasswordValid = showError(passwordInput, 'password-error');
+            const isConfirmPasswordValid = showError(confirmPasswordInput, 'confirm-password-error');
+            const doPasswordsMatch = passwordInput.value === confirmPasswordInput.value;
+
+            if (!doPasswordsMatch && confirmPasswordInput.value.trim() !== '') {
+                document.getElementById('password-match-error').style.display = 'block';
+            } else {
+                document.getElementById('password-match-error').style.display = 'none';
+            }
+
+            return isUsernameValid && isPasswordValid && isConfirmPasswordValid && doPasswordsMatch;
+        };
+
+        const enableRegisterButton = () => {
+            registerButton.disabled = !validateForm();
+        };
+
+        form.addEventListener('input', enableRegisterButton);
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            if (validateForm()) {
+                successMessage.style.display = 'block';
+                form.reset();
+                registerButton.disabled = true;
+            }
+        });
+    </script>
+</body>
+</html>
